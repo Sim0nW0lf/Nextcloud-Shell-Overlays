@@ -12,7 +12,7 @@ for %%O in ( NCOverlays.dll OCOverlays.dll ) do (
 )
 
 :sucheOverlays
-REM Suche in allen mîglichen Festplatten nach Nextclouds Overlays.dll und springe zu :Overlays_gefunden
+REM Search in all your disks for Nextcloud Overlays.dll and continue with :Overlays_gefunden
 for %%O in ( NCOverlays.dll OCOverlays.dll ) do (
 	echo Suche nach %%O auf deinem PC...
 	for %%i in ( a b c d e f g h i j k l m n o p q r s t u v w x y z ) do (
@@ -26,15 +26,16 @@ for %%O in ( NCOverlays.dll OCOverlays.dll ) do (
 )
 echo.
 echo ERROR:
-echo Nextclouds Overlays.dll wurde auf keinem Laufwerk gefunden.
+echo Nextcloud Overlays.dll was not found on any disk
 echo.
-echo Falls Nextcloud noch nicht installiert ist, tun Sie das bitte zuerst.
-echo Ansonsten wenden Sie sich bitte an Simon Wolf fÅr weiteren Support.
+echo Please install the Nextcloud Windows Client first, if you didn't do that already
+echo Otherwise report your issue on GitHub and I will try to fix it
+echo https://github.com/iPwnWolf/Nextcloud-Shell-Overlays/
 echo.
 call :end
 
 :Overlays_gefunden
-REM check which Nextcloud Overlay.dlls was installed and set the corresponting Registry entries
+REM check which Nextcloud Overlays.dll will be installed and set the corresponding Registry entries
 echo %Overlays_Pfad%|find "NCOverlays.dll"
 if errorlevel 1 (
 	REM not found
@@ -56,13 +57,14 @@ if errorlevel 1 (
 	set Warning=OCWarning
 )
 
-REM Alle existierenden Nextcloud Reg Keys lîschen, egal ob OC... oder Nextcloud... es wird nur nach Error, Ok, ... gesucht! (Auf Konflikte geprÅft https://en.wikipedia.org/wiki/List_of_shell_icon_overlay_identifiers)
+REM Delete all NC Keys, also old ones (OC Keys and Nextcloud Keys (Function checked for conflicting overlay identifiers: https://en.wikipedia.org/wiki/List_of_shell_icon_overlay_identifiers)
 for /f "delims=" %%k in ('reg query HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ShellIconOverlayIdentifiers /f "" /k') do (
-	for %%v in ( Error OK Sync Warning ) do (
-		REM Wenn ein Overlay Key von Nextcloud gefunden wird, wird er gelîscht
+	REM the Key OKShared is included with the Key OK
+	for %%v in ( NextcloudError NextcloudOK NextcloudSync NextcloudWarning OCError OCOK OCSync OCWarning ) do (
+		REM if a NC Key is found, it will be deleted
 		echo %%~nk|find "%%v" >nul
 		if errorlevel 1 (
-			REM Error oder OK oder OKShared oder Sync oder Warning nicht gefunden
+			REM Error or OK or OKShared or Sync or Warning not found
 		) else (
 			if exist "%%k" do (
 				reg delete "%%k" /f
@@ -71,20 +73,20 @@ for /f "delims=" %%k in ('reg query HKLM\SOFTWARE\Microsoft\Windows\CurrentVersi
 	)
 )
 
-REM Overlays.dll ausfÅhren als Admin --> Overlay Keys in Registry schreiben
+REM execute Overlays.dll with admin privileges --> Write NCOverlay Keys in Registry
 regsvr32.exe "%Overlays_Pfad%" /s
 
-echo Nextcloud Overlay Keys nach oben pushen
+echo Push NC Keys on Top
 for /f "delims=" %%x in ('reg query HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ShellIconOverlayIdentifiers /f "" /k') do (
 	
-	REM kontrollieren ob alle Keys oben sind
+	REM check if all NC keys are on top
 	setlocal enableextensions enabledelayedexpansion
 		set /A counter=0
 		set /A found=0
 	for /f "delims=" %%C in ('reg query HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ShellIconOverlayIdentifiers /f "" /k') do if not defined _CorrectBreak (
 		echo %%~nC|find "%Error%"
 		if errorlevel 1 (
-			REM nothing to do
+			REM nothing to do (%Error% not found)
 		) else (
 			set /A found+=1
 		)
@@ -123,7 +125,7 @@ for /f "delims=" %%x in ('reg query HKLM\SOFTWARE\Microsoft\Windows\CurrentVersi
 		)
 	)
 	if !found! EQU !counter! (
-		REM Alle Nextcloud Keys sind ganz oben
+		REM All Nextcloud Keys are on top
 		call :delete_remaining_Keys
 	) else (
 		REM call :push_Nextcloud_Keys
@@ -131,12 +133,12 @@ for /f "delims=" %%x in ('reg query HKLM\SOFTWARE\Microsoft\Windows\CurrentVersi
 	endlocal
 
 
-	REM 3 Leerzeichen vor Nextcloud Keys machen, dann wieder kontrollieren ob jetzt alle oben sind
+	REM Put spaces in front of NC Keys and check again if the keys are on top of the list now
 	for %%N in ( %Error% %OK% %OKShared% %Sync% %Warning% ) do (
 	set _NextBreak=
 	set _KeyBreak=
 		for /f "delims=" %%k in ('reg query HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ShellIconOverlayIdentifiers /f "" /k') do if not defined _NextBreak (
-			REM Wenn die erste Zeile nicht %Error% ist, wird ein Leerzeichen hinzugefÅgt
+			REM If the first Reg Key is not %Error%, spaces will be put in front of every NC Key
 			echo %%~nk|find "%%N" >nul
 			if errorlevel 1 (
 				for /f "delims=" %%E in ('reg query HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ShellIconOverlayIdentifiers /f "%%N" /k') do if not defined _KeyBreak (
@@ -154,10 +156,10 @@ for /f "delims=" %%x in ('reg query HKLM\SOFTWARE\Microsoft\Windows\CurrentVersi
 
 
 :delete_remaining_Keys
-echo öberflÅssige Keys lîschen
+echo delete remaining extra registry keys
 for /f "skip=6 delims=" %%k in ('reg query HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ShellIconOverlayIdentifiers /f "" /k') do (
 	for %%v in ( %Error% %OK% %Sync% %Warning% ) do (
-		REM Wenn ein Overlay Key von Nextcloud gefunden wird, wird er gelîscht
+		REM Wenn ein Overlay Key von Nextcloud gefunden wird, wird er gel‚Äùscht
 		echo %%~nk|find "%%v" >nul
 		if errorlevel 1 (
 			REM %Error% oder %OK% oder %OKShared% oder %Sync% oder %Warning% nicht gefunden
@@ -169,7 +171,7 @@ for /f "skip=6 delims=" %%k in ('reg query HKLM\SOFTWARE\Microsoft\Windows\Curre
 	)
 )
 
-REM Explorer neu starten
+REM Restart Explorer
 taskkill /f /im explorer.exe
 start explorer.exe
 
@@ -178,11 +180,11 @@ echo.
 echo *****************************************************************************************************
 echo *                                                                                                   *
 echo *                                                                                                   *
-echo *                                             FERTIG                                                *
-echo *                      Jetzt sollten die Symbole von Nextcloud da sein                              *
+echo *                                             FINISHED                                              *
+echo *                              Nextcloud icons should be visible now                                *
 echo *                                                                                                   *
 echo *                                                                                                   *
-echo *               Falls nicht, einfach an Simon Wolf wenden, fÅr weiteren Support.                    *
+echo *                      https://github.com/iPwnWolf/Nextcloud-Shell-Overlays/                        *
 echo *****************************************************************************************************
 echo.
 
