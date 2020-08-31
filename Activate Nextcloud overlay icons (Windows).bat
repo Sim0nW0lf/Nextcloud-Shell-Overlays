@@ -157,9 +157,10 @@ for /f "delims=" %%x in ('reg query HKLM\SOFTWARE\Microsoft\Windows\CurrentVersi
 
 :delete_remaining_Keys
 echo delete remaining extra registry keys
+REM Skip the NC Keys which are on top, delete the rest
 for /f "skip=6 delims=" %%k in ('reg query HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ShellIconOverlayIdentifiers /f "" /k') do (
 	for %%v in ( %Error% %OK% %Sync% %Warning% ) do (
-		REM Wenn ein Overlay Key von Nextcloud gefunden wird, wird er gel”scht
+		REM If an Overlay Key from Nextcloud is found, it will be deleted
 		echo %%~nk|find "%%v" >nul
 		if errorlevel 1 (
 			REM %Error% oder %OK% oder %OKShared% oder %Sync% oder %Warning% nicht gefunden
