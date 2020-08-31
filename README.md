@@ -1,14 +1,14 @@
 # Nextcloud-Shell-Overlays
 Pushing Nextcloud Registry Keys to the top to enable shell Overlays on windows
 
-##Installation:
+`##`Installation:
 Just download the .bat file and execute it in Windows after installing the Windows Nextcloud Client.
 It may be recognized by Windows as a threat but I think that's normal because I edit the Registry. Don't worry about that.
 
 You can execute the file as often as you like, the result will stay the same. (No junk files are being left behind)
 I am using Batch because it runs on every Windows System.
 
-###The Script works like this:
+`###`The Script works like this:
 
 1. Checking if NCOverlays.dll or OCOverlays.dll is at the default installation Path. (C:\Program Files\Nextcloud\shellext\)
 When it's found continue with 3.
