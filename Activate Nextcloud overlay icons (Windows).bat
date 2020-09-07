@@ -175,7 +175,7 @@ for /f "skip=6 delims=" %%k in ('reg query HKLM\SOFTWARE\Microsoft\Windows\Curre
 REM Optionally disable OneDrive notification
 :OneDriveNotifications
 set OneDriveNotify=HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings\Microsoft.SkyDrive.Desktop
-echo cls
+cls
 echo.
 echo OneDrive will regularely inform you, that their icons must be updated.
 echo That will undo what this script has done.
