@@ -1,8 +1,6 @@
 @echo off
 if not "%1"=="am_admin" (powershell start -verb runas '%0' am_admin & exit /b)
 
-call :OneDriveNotifications
-
 set Overlays_Pfad=C:\Program Files\Nextcloud\shellext\
 
 REM In case the Overlay.dll name changes, add the new name here, also in :sucheOverlays and in :Overlays_gefunden!
@@ -177,7 +175,8 @@ for /f "skip=6 delims=" %%k in ('reg query HKLM\SOFTWARE\Microsoft\Windows\Curre
 REM Optionally disable OneDrive notification
 :OneDriveNotifications
 set OneDriveNotify=HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings\Microsoft.SkyDrive.Desktop
-echo OneDrive will regularely inform you, that their icons must be updated. That will undo what this script has done.
+echo OneDrive will regularely inform you, that their icons must be updated.
+echo That will undo what this script has done.
 echo.
 CHOICE /C YN /M "Do you want to disable OneDrive notifications now"
 IF ERRORLEVEL ==2 GOTO refresh
