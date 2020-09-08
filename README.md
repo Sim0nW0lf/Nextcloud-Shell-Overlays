@@ -19,7 +19,8 @@ That covers the possibility that you installed the program anywhere else
 5. Execute NC Overlays.dll to insert Keys in Registry
 6. Push NC Keys on top of the list by adding spaces in front of their names (by copying, since you can not rename a reg key as far as I know)
 7. When all Keys are on Top, delete remaining Reg Keys which were left over further down the list when copying
-8. Restart Explorer.exe to be able to see the changes immediately
+8. Optionally disable OneDrive notifications
+9. Restart Explorer.exe to be able to see the changes immediately
 
 Feel free to contact me for issues/suggestions/mistakes, I just learned batch to write this script and I know my code is not very good at all! Still hope that it's useful to you.
 (https://github.com/iPwnWolf/Nextcloud-Shell-Overlays)
