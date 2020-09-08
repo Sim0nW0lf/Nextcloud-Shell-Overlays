@@ -175,6 +175,13 @@ for /f "skip=6 delims=" %%k in ('reg query HKLM\SOFTWARE\Microsoft\Windows\Curre
 REM Optionally disable OneDrive notification
 :OneDriveNotifications
 set OneDriveNotify=HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings\Microsoft.SkyDrive.Desktop
+REM Skip :OneDriveNotifications if OneDrive notifications are disabled already or the registry path is not found.
+REG QUERY %OneDriveNotify%
+IF ERRORLEVEL ==1 GOTO refresh
+for /f "tokens=3" %%a in ('reg query "%OneDriveNotify%"  /V Enabled  ^|findstr /ri "0x0"') do (
+	if errorlevel ==0 GOTO refresh
+)
+REM Else continue asking if the notifications should be disabled
 cls
 echo.
 echo OneDrive will regularely inform you, that their icons must be updated.
@@ -185,10 +192,7 @@ IF ERRORLEVEL ==2 GOTO refresh
 IF ERRORLEVEL ==1 GOTO YES
 
 :YES
-echo OneDriveNotify: %OneDriveNotify%
-if exist "%OneDriveNotify%" do (
-	REG ADD %OneDriveNotify% /v Enabled /t REG_DWORD /d 0 /f
-)
+REG ADD %OneDriveNotify% /v Enabled /t REG_DWORD /d 0 /f
 
 :refresh
 REM Restart Explorer
