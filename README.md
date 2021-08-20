@@ -23,4 +23,4 @@ That covers the possibility that you installed the program anywhere else
 9. Restart Explorer.exe to be able to see the changes immediately
 
 Feel free to contact me for issues/suggestions/mistakes, I just learned batch to write this script and I know my code is not very good at all! Still hope that it's useful to you.
-(https://github.com/iPwnWolf/Nextcloud-Shell-Overlays)
+(https://github.com/Sim0nW0lf/Nextcloud-Shell-Overlays)
