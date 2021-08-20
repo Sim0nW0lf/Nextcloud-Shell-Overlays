@@ -31,7 +31,7 @@ echo *                                             FINISHED                     
 echo *                                Nextcloud icons have been deleted                                  *
 echo *                                                                                                   *
 echo *                                       Please report issues                                        *
-echo *                       https://github.com/iPwnWolf/Nextcloud-Shell-Overlays/                       *
+echo *                       https://github.com/Sim0nW0lf/Nextcloud-Shell-Overlays/                       *
 echo *****************************************************************************************************
 echo.
 
